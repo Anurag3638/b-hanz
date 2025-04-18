@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
-import { categories } from "../data/data";
 import ProductCard from "../components/ui/ProductCard";
 import { FiFilter, FiX, FiChevronDown } from "react-icons/fi";
-import axios from "axios";
+import useCategory from "../hooks/useCategory";
+import useProduct from "../hooks/useProduct";
 
 const Products = () => {
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("/api/data/products")
-      .then((res) => setProducts(res.data))
-      .catch((err) => console.error("Failed to fetch products", err));
-  }, []);
+  const categories = useCategory();
+  const products = useProduct() ?? [];
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [filters, setFilters] = useState({
     category: "all",
@@ -29,12 +23,11 @@ const Products = () => {
   }, [filters, searchQuery]);
 
   const applyFilters = () => {
-    let result = [...products];
+    let result = [...products]; // Clone original
 
-    // Apply search query filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(
+      result = result?.filter(
         (product) =>
           product.name.toLowerCase().includes(query) ||
           product.description.toLowerCase().includes(query) ||
@@ -42,60 +35,49 @@ const Products = () => {
       );
     }
 
-    // Apply category filter
     if (filters.category !== "all") {
-      result = result.filter(
+      result = result?.filter(
         (product) => product.category === filters.category
       );
     }
 
-    // Apply price filter
     if (filters.price !== "all") {
-      switch (filters.price) {
-        case "under25":
-          result = result.filter((product) => product.price < 25);
-          break;
-        case "25to50":
-          result = result.filter(
-            (product) => product.price >= 25 && product.price <= 50
-          );
-          break;
-        case "50to100":
-          result = result.filter(
-            (product) => product.price > 50 && product.price <= 100
-          );
-          break;
-        case "over100":
-          result = result.filter((product) => product.price > 100);
-          break;
-        default:
-          break;
-      }
+      result = result?.filter((product) => {
+        const price = product.price;
+        switch (filters.price) {
+          case "under25":
+            return price < 25;
+          case "25to50":
+            return price >= 25 && price <= 50;
+          case "50to100":
+            return price > 50 && price <= 100;
+          case "over100":
+            return price > 100;
+          default:
+            return true;
+        }
+      });
     }
 
-    // Apply rating filter
     if (filters.rating > 0) {
-      result = result.filter((product) => product.rating >= filters.rating);
+      result = result?.filter((product) => product.rating >= filters.rating);
     }
 
-    // Apply sorting
+    // Sorting
     switch (filters.sort) {
       case "price-low-high":
-        result.sort((a, b) => a.price - b.price);
+        result?.sort((a, b) => a.price - b.price);
         break;
       case "price-high-low":
-        result.sort((a, b) => b.price - a.price);
+        result?.sort((a, b) => b.price - a.price);
         break;
       case "newest":
-        result = result
-          .filter((product) => product.isNew)
-          .concat(result.filter((product) => !product.isNew));
+        result?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         break;
       case "rating":
-        result.sort((a, b) => b.rating - a.rating);
+        result?.sort((a, b) => b.rating - a.rating);
         break;
       default:
-        // recommended - no specific sorting
         break;
     }
 
@@ -200,7 +182,7 @@ const Products = () => {
                     All Categories
                   </label>
                 </div>
-                {categories.map((category) => (
+                {categories?.map((category) => (
                   <div key={category.id} className="flex items-center">
                     <input
                       type="radio"
@@ -245,7 +227,7 @@ const Products = () => {
                     type="radio"
                     id="price-under25"
                     name="price"
-                    checked={filters.price === "under25"}
+                    checked={filters?.price === "under25"}
                     onChange={() => handleFilterChange("price", "under25")}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                   />
@@ -258,7 +240,7 @@ const Products = () => {
                     type="radio"
                     id="price-25to50"
                     name="price"
-                    checked={filters.price === "25to50"}
+                    checked={filters?.price === "25to50"}
                     onChange={() => handleFilterChange("price", "25to50")}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                   />
@@ -271,7 +253,7 @@ const Products = () => {
                     type="radio"
                     id="price-50to100"
                     name="price"
-                    checked={filters.price === "50to100"}
+                    checked={filters?.price === "50to100"}
                     onChange={() => handleFilterChange("price", "50to100")}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                   />
@@ -284,7 +266,7 @@ const Products = () => {
                     type="radio"
                     id="price-over100"
                     name="price"
-                    checked={filters.price === "over100"}
+                    checked={filters?.price === "over100"}
                     onChange={() => handleFilterChange("price", "over100")}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                   />
@@ -304,7 +286,7 @@ const Products = () => {
                     type="radio"
                     id="rating-all"
                     name="rating"
-                    checked={filters.rating === 0}
+                    checked={filters?.rating === 0}
                     onChange={() => handleFilterChange("rating", 0)}
                     className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                   />
@@ -318,7 +300,7 @@ const Products = () => {
                       type="radio"
                       id={`rating-${rating}`}
                       name="rating"
-                      checked={filters.rating === rating}
+                      checked={filters?.rating === rating}
                       onChange={() => handleFilterChange("rating", rating)}
                       className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                     />
@@ -365,7 +347,7 @@ const Products = () => {
             <div className="bg-white p-4 rounded-lg shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center">
               <div className="mb-3 sm:mb-0">
                 <p className="text-gray-600">
-                  Showing {filteredProducts.length} results
+                  Showing {filteredProducts?.length} results
                 </p>
               </div>
               <div className="flex items-center">
@@ -375,7 +357,7 @@ const Products = () => {
                 <div className="relative">
                   <select
                     id="sort"
-                    value={filters.sort}
+                    value={filters?.sort}
                     onChange={(e) => handleFilterChange("sort", e.target.value)}
                     className="appearance-none bg-white border border-gray-300 rounded-md pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
                   >
@@ -393,9 +375,9 @@ const Products = () => {
             </div>
 
             {/* Products */}
-            {filteredProducts.length > 0 ? (
+            {filteredProducts?.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
+                {filteredProducts?.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>

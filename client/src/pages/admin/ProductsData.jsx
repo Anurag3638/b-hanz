@@ -1,32 +1,11 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useProduct from "../../hooks/useProduct";
+import useCategory from "../../hooks/useCategory";
 
 export default function ProductsData() {
-  const [products, setProducts] = useState([]);
-  const [category, setCategory] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("/api/data/products") // Make sure this endpoint exists and returns an array
-      .then((response) => {
-        setProducts(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    axios
-      .get("/api/data/categories")
-      .then((res) => {
-        setCategory(res.data.categorySearch);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-      });
-  }, []);
+  const products = useProduct();
+  const category = useCategory();
 
   const navigate = useNavigate();
 
@@ -65,8 +44,8 @@ export default function ProductsData() {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => {
-                const categoryName = category.find(
+              {products?.map((product) => {
+                const categoryName = category?.find(
                   (cat) => cat._id === product.category
                 );
                 return (

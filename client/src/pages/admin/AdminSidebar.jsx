@@ -14,6 +14,9 @@ export default function AdminSidebar() {
         <Link to="/admin/products" className="hover:text-yellow-400">
           Products
         </Link>
+        <Link to="/admin/categories" className="hover:text-yellow-400">
+          Categories
+        </Link>
         <Link to="/admin/orders" className="hover:text-yellow-400">
           Orders
         </Link>

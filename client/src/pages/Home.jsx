@@ -2,14 +2,16 @@ import { Link } from "react-router-dom";
 import HeroSlider from "../components/ui/HeroSlider";
 import ProductCard from "../components/ui/ProductCard";
 import CategoryCard from "../components/ui/CategoryCard";
-import { heroSlides, categories } from "../data/data.js";
+import { heroSlides } from "../data/data.js";
 import { FiArrowRight } from "react-icons/fi";
 // import axios from "axios";
 // import { useEffect, useState } from "react";
 import useProduct from "../hooks/useProduct.js";
+import useCategory from "../hooks/useCategory.js";
 
 const Home = () => {
   const products = useProduct();
+  const categories = useCategory();
   const newArrivals = products?.filter((product) => product.isNew);
   const bestSellers = products?.filter((product) => product.isBestSeller);
   const specialOffers = products?.filter((product) => product.discount > 0);
@@ -34,8 +36,8 @@ const Home = () => {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
+            {categories?.map((category) => (
+              <CategoryCard key={category?.id} category={category} />
             ))}
           </div>
         </div>

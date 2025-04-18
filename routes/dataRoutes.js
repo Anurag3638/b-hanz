@@ -34,7 +34,7 @@ router.put('/update-category/:id', requireSignIn, isAdmin, async (req, res) => {
 
 router.post('/create-category', requireSignIn, isAdmin, async (req, res) => {
   try {
-    const {name} = req.body;
+    const {name, img} = req.body;
     if (!name) {
       return res.status(401).send({message:'Name is Required'})
     }
@@ -42,7 +42,7 @@ router.post('/create-category', requireSignIn, isAdmin, async (req, res) => {
     if (checkCategory) {
       return res.status(200).send({message:'category already exists'})
     }
-    const category = await new categoryModel({name, slug:slugify(name)}).save();
+    const category = await new categoryModel({name, slug:slugify(name), img}).save();
 
 
     res.status(201).send({
@@ -58,10 +58,18 @@ router.post('/create-category', requireSignIn, isAdmin, async (req, res) => {
 router.get('/category/:slug', async (req, res) =>{
   const {slug} = req.params;
   const categorySearch = await categoryModel.findOne({slug});
+  const allProducts = await productModel.find({category:categorySearch._id});
+  if (!categorySearch) {
+    return res.status(404).send({
+      success:false,
+      message:"Category not found",
+    });
+  }
   res.status(200).send({
     success:true,
     message:"Category found successfully",
-    categorySearch
+    categorySearch,
+    allProducts
   });
 });
 router.get('/category/:id', async (req, res) =>{
@@ -159,9 +167,11 @@ router.get('/products', async (req, res) =>{
   res.status(200).send(products);
 });
 
+
 router.get("/search", async (req, res) => {
   const search = await productModel.find(req.query);
-  res.status(200).json({ search });
+  
+  return res.status(200).send(search);
 });
 
 

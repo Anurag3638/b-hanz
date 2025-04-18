@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FiShoppingCart, FiMenu, FiX, FiUser, FiSearch } from "react-icons/fi";
+import slugify from "slugify";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount] = useState(0);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const handelSubmit = (e) => {
+    e.preventDefault();
+    const slug = slugify(searchQuery, { lower: true });
+    navigate(`/search/${slug}`);
+  };
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="container-custom py-4">
@@ -32,7 +40,7 @@ const Navbar = () => {
               Products
             </Link>
             <Link
-              to="/products"
+              to="/categories"
               className="text-gray-700 hover:text-primary-600 font-medium"
             >
               Categories
@@ -53,14 +61,18 @@ const Navbar = () => {
 
           {/* Search, User and Cart */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="pl-9 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
-              />
-              <FiSearch className="absolute left-3 top-2.5 text-gray-400" />
-            </div>
+            <form onSubmit={handelSubmit}>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent"
+                />
+                <FiSearch className="absolute left-3 top-2.5 text-gray-400" />
+              </div>
+            </form>
             <Link
               to="/account"
               className="text-gray-700 hover:text-primary-600"

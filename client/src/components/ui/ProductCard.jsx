@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
+import useCategory from "../../hooks/useCategory";
+import { useCart } from "../../context/CartContext";
 
 const ProductCard = ({ product }) => {
+  const { addToCart } = useCart();
   const {
     id,
     name,
@@ -15,6 +18,9 @@ const ProductCard = ({ product }) => {
   } = product;
 
   const discountedPrice = discount ? price - (price * discount) / 100 : price;
+  const categories = useCategory();
+  const categoryName = categories?.find((cat) => cat._id === category)?.name;
+  const categorySlug = categories?.find((cat) => cat._id === category)?.slug;
 
   return (
     <div className="card group transition-all duration-300 hover:shadow-lg">
@@ -67,10 +73,10 @@ const ProductCard = ({ product }) => {
       {/* Product info */}
       <div className="p-4">
         <Link
-          to={`/category/${category}`}
+          to={`/category/${categorySlug}`}
           className="text-xs text-primary-600 font-medium hover:underline"
         >
-          {category}
+          {categoryName}
         </Link>
         <Link to={`/products/${id}`} className="block mt-1">
           <h3 className="text-gray-900 font-medium text-lg hover:text-primary-600 transition-colors">
@@ -81,11 +87,11 @@ const ProductCard = ({ product }) => {
         {/* Price */}
         <div className="mt-2 flex items-center">
           <span className="text-gray-900 font-bold text-lg">
-            ${discountedPrice.toFixed(2)}
+            ${discountedPrice?.toFixed(2)}
           </span>
           {discount > 0 && (
             <span className="ml-2 text-gray-500 text-sm line-through">
-              ${price.toFixed(2)}
+              ${price?.toFixed(2)}
             </span>
           )}
         </div>
@@ -111,7 +117,10 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Add to cart button */}
-        <button className="mt-4 w-full py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-medium transition-colors">
+        <button
+          className="mt-4 w-full py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-md font-medium transition-colors"
+          onClick={() => addToCart(product)}
+        >
           Add to Cart
         </button>
       </div>

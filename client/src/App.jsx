@@ -13,6 +13,9 @@ import UsersData from "./pages/admin/UsersData";
 import ProductsData from "./pages/admin/ProductsData";
 import AddProduct from "./pages/admin/AddProduct";
 import SearchItem from "./pages/SearchItem";
+import CategoriesData from "./pages/admin/CategoriesData";
+import ProductCategory from "./pages/details/ProductCategory";
+import CartPage from "./pages/CartPAge";
 
 function App() {
   return (
@@ -20,7 +23,10 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/search" element={<SearchItem />} />
+        <Route path="/cart" element={<CartPage />} />
+        <Route path="/categories" element={<CategoriesData />} />
+        <Route path="/category/:slug" element={<ProductCategory />} />
+        <Route path="/search/:slug" element={<SearchItem />} />
         <Route path="/account" element={<Account />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
@@ -35,6 +41,7 @@ function App() {
         <Route path="" element={<AdminLayout />}>
           <Route path="users" element={<UsersData />} />
           <Route path="products" element={<ProductsData />} />
+          <Route path="categories" element={<CategoriesData />} />
           <Route path="products/add-product" element={<AddProduct />} />
           {/* <Route path="orders" element={<OrdersData />} /> */}
         </Route>

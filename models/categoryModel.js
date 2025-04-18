@@ -9,6 +9,9 @@ const categorySchema = new mongoose.Schema({
     slug:{
         type:String,
         lowercase:true
+    },
+    img:{
+        type:String
     }
 })
 
