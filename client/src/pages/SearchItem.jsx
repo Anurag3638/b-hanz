@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { FiSearch } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import ProductCard from "../components/ui/ProductCard";
 
@@ -10,8 +9,7 @@ const SearchItem = () => {
   const handleSearch = async () => {
     try {
       const res = await axios.get(`/api/data/search?slug=${params.slug}`);
-      setResults(res?.data.search);
-      console.log(res?.data.search);
+      setResults(res?.data);
     } catch (err) {
       console.log(err);
     }
@@ -22,7 +20,17 @@ const SearchItem = () => {
   }, []);
   return (
     <div>
-      <ProductCard key={results?._id} product={results} />
+      {results?.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 p-4">
+          {results?.map((product) => (
+            <ProductCard key={product?._id} product={product} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-10 text-xl font-semibold">
+          No results found for "{params.slug}"
+        </div>
+      )}
     </div>
   );
 };
