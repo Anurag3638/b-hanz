@@ -16,6 +16,7 @@ import SearchItem from "./pages/SearchItem";
 import CategoriesData from "./pages/admin/CategoriesData";
 import ProductCategory from "./pages/details/ProductCategory";
 import CartPage from "./pages/CartPAge";
+import ProductDetail from "./pages/details/ProductDetail";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/products/:_id" element={<ProductDetail />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/categories" element={<CategoriesData />} />
         <Route path="/category/:slug" element={<ProductCategory />} />

@@ -8,8 +8,9 @@ const SearchItem = () => {
   const [results, setResults] = useState([]);
   const handleSearch = async () => {
     try {
-      const res = await axios.get(`/api/data/search?slug=${params.slug}`);
+      const res = await axios.get("/api/data/search", { params: params });
       setResults(res?.data);
+      console.log(res?.data);
     } catch (err) {
       console.log(err);
     }

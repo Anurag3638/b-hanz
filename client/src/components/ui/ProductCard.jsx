@@ -6,7 +6,7 @@ import { useCart } from "../../context/CartContext";
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const {
-    id,
+    _id,
     name,
     price,
     discount,
@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
     <div className="card group transition-all duration-300 hover:shadow-lg">
       <div className="relative overflow-hidden">
         {/* Product image */}
-        <Link to={`/products/${id}`}>
+        <Link to={`/products/${_id}`}>
           <img
             src={image}
             alt={name}
@@ -78,7 +78,7 @@ const ProductCard = ({ product }) => {
         >
           {categoryName}
         </Link>
-        <Link to={`/products/${id}`} className="block mt-1">
+        <Link to={`/products/${_id}`} className="block mt-1">
           <h3 className="text-gray-900 font-medium text-lg hover:text-primary-600 transition-colors">
             {name}
           </h3>
