@@ -183,19 +183,19 @@ const Products = () => {
                   </label>
                 </div>
                 {categories?.map((category) => (
-                  <div key={category.id} className="flex items-center">
+                  <div key={category._id} className="flex items-center">
                     <input
                       type="radio"
-                      id={`category-${category.id}`}
+                      id={`category-${category._id}`}
                       name="category"
-                      checked={filters.category === category.id}
+                      checked={filters.category === category._id}
                       onChange={() =>
-                        handleFilterChange("category", category.id)
+                        handleFilterChange("category", category._id)
                       }
                       className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300"
                     />
                     <label
-                      htmlFor={`category-${category.id}`}
+                      htmlFor={`category-${category._id}`}
                       className="ml-2 text-gray-700"
                     >
                       {category.name}
@@ -378,7 +378,7 @@ const Products = () => {
             {filteredProducts?.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts?.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard key={product._id} product={product} />
                 ))}
               </div>
             ) : (
