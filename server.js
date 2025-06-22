@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname,'./client/dist')))
 
 dotenv.config();
 
-app.use(cors({ origin: "http://localhost:8080" }));
+app.use(cors({ origin: "https://bhanz.onrender.com/" }));
 
 const PORT = process.env.PORT;
 
