@@ -19,12 +19,18 @@ app.use(express.static(path.join(__dirname,'./client/dist')))
 
 dotenv.config();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({ origin: "http://localhost:8080" }));
 
 const PORT = process.env.PORT;
 
 connectDb();
-app.use("*",function(req,res){
+
+// Api Routes
+
+app.use('/api/v1/auth',authRoutes);
+app.use('/api/data',dataRoutes);
+
+app.get("*",function(req,res){
     res.sendFile(path.join(__dirname,'./client/dist/index.html'));
 })
 app.get("/" , (req, res) =>{
@@ -32,10 +38,7 @@ app.get("/" , (req, res) =>{
 });
 
 
-// Api Routes
 
-app.use('/api/v1/auth',authRoutes);
-app.use('/api/data',dataRoutes);
 
 
 
