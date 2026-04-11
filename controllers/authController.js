@@ -7,16 +7,18 @@ export const registerController = async (req, res) => {
     try {
         console.log("Received Request:", req.body);
 
-        // Check if Mongoose is connected before querying
-        if (!userModel.db.readyState) {
-            return res.status(500).send("Database not connected!");
+        if (userModel.db.readyState !== 1) {
+            return res.status(503).send({
+                success: false,
+                message: "Database not connected"
+            });
         }
 
         const { name, email, phone, password } = req.body;
 
         if (!name || !email || !phone || !password) {
             return res.status(400).send({
-                success:false,
+                success: false,
                 message: "Fields cannot be empty",
             });
         }
@@ -25,7 +27,7 @@ export const registerController = async (req, res) => {
         const existingUser = await userModel.findOne({ email });
         if (existingUser) {
             return res.status(409).send({
-                success:false,
+                success: false,
                 message: "Already registered",
             });
         }
@@ -52,19 +54,19 @@ export const registerController = async (req, res) => {
 };
 
 // for login
-export const loginController = async (req, res)=>{
+export const loginController = async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const { email, password } = req.body;
         if (!email || !password) {
-            return res.send({message:"Not matched"})
+            return res.send({ message: "Not matched" })
         }
-        const user = await userModel.findOne({email});
+        const user = await userModel.findOne({ email });
         if (!user) {
-            return res.send({message:"email not found"})
+            return res.send({ message: "email not found" })
         }
-        const match = await comparePass(password,user.password);
+        const match = await comparePass(password, user.password);
         if (!match) {
-            return res.send({message:"Invalid password"})
+            return res.send({ message: "Invalid password" })
         }
 
 
@@ -72,18 +74,18 @@ export const loginController = async (req, res)=>{
         // token
 
 
-        const token = await jwt.sign({_id:user._id},process.env.jwtsecret, {expiresIn:"7d"});
+        const token = await jwt.sign({ _id: user._id }, process.env.jwtsecret, { expiresIn: "7d" });
         return res.status(200).send({
             success: true,
             message: "Logged in successfully",
             user: {
-              name: user.name,
-              email: user.email,
-              phone: user.phone,
-              role: user.role,
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
             },
             token,
-          });
+        });
     } catch (error) {
         console.log(error);
     }
@@ -91,7 +93,7 @@ export const loginController = async (req, res)=>{
 
 //test controller
 
-export const testController = (req,res)=>{
+export const testController = (req, res) => {
     res.send("protected route");
 };
 

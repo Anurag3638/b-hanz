@@ -5,32 +5,62 @@ import morgan from 'morgan';
 import connectDb from './config/db.js';
 import authRoutes from './routes/authRout.js';
 import dataRoutes from './routes/dataRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 
 // const product = require("./model/model.js");
 // const user = require("./model/user.js");
 // const { findOne } = require("./model/user.js");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, './client/dist')));
 
 dotenv.config();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+const allowedOrigins = [
+    process.env.CLIENT_URL,
+    'https://bhanz.onrender.com',
+    'http://localhost:3000',
+    'http://localhost:5173'
+].filter(Boolean);
 
-const PORT = process.env.PORT;
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(new Error('Not allowed by CORS'));
+    }
+}));
+
+const PORT = process.env.PORT || 8080;
 
 connectDb();
 
-app.get("/" , (req, res) =>{
-    res.send('<h1>Hello</h1>')
+// Api Routes - Must be before catch-all routes
+
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/data', dataRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/analytics', analyticsRoutes);
+
+// SPA routes - Catch-all at the end
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, './client/dist/index.html'));
 });
 
-
-// Api Routes
-
-app.use('/api/v1/auth',authRoutes);
-app.use('/api/data',dataRoutes);
+app.get('*', function (req, res) {
+    res.sendFile(path.join(__dirname, './client/dist/index.html'));
+});
 
 
 // app.use(express.urlencoded({ extended: false }));
@@ -135,5 +165,5 @@ app.use('/api/data',dataRoutes);
 
 
 app.listen(PORT, () => {
-  console.log("Server started on port : 8080");
+    console.log(`Server started on port : ${PORT}`);
 });

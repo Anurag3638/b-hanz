@@ -9,9 +9,12 @@ import Dashboard from "./pages/user/Dashboard";
 import PrivateRoute from "./components/routes/Private";
 import AdminRoute from "./components/routes/AdminRoute";
 import AdminLayout from "./pages/admin/AdminLayout";
-import UsersData from "./pages/admin/UsersData";
-import ProductsData from "./pages/admin/ProductsData";
-import AddProduct from "./pages/admin/AddProduct";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
+import OrderManagement from "./pages/admin/OrderManagement";
+import UserManagement from "./pages/admin/UserManagement";
+import ProductManagement from "./pages/admin/ProductManagement";
+import AdminSettings from "./pages/admin/AdminSettings";
+import AdminNotifications from "./pages/admin/AdminNotifications";
 import SearchItem from "./pages/SearchItem";
 
 function App() {
@@ -31,12 +34,16 @@ function App() {
       <Route path="/user" element={<PrivateRoute />}>
         <Route path="" element={<Dashboard />} />
       </Route>
+
+      {/* Admin Routes */}
       <Route path="/admin" element={<AdminRoute />}>
         <Route path="" element={<AdminLayout />}>
-          <Route path="users" element={<UsersData />} />
-          <Route path="products" element={<ProductsData />} />
-          <Route path="products/add-product" element={<AddProduct />} />
-          {/* <Route path="orders" element={<OrdersData />} /> */}
+          <Route path="dashboard" element={<AnalyticsDashboard />} />
+          <Route path="orders" element={<OrderManagement />} />
+          <Route path="users" element={<UserManagement />} />
+          <Route path="products" element={<ProductManagement />} />
+          <Route path="notifications" element={<AdminNotifications />} />
+          <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Route>
     </Routes>
